@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="特殊教育教材教具 AI 創意設計與思辨歷程紀錄：從需求分析、AI 發想、視覺化、製作、測試到教學反思。">
+  <title>AI 教材教具設計工作室｜特殊教育</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="config.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">跳到主要內容</a>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand"><span class="brand-mark">✳</span><span>AI 教材教具設計工作室</span></div>
+      <div class="topbar-tools"><span id="connectionPill" class="pill pill-muted">檢查連線中</span><button type="button" class="btn btn-quiet btn-small" id="exportBtn">匯出備份</button></div>
+    </div>
+  </div>
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">SPECIAL EDUCATION × GENERATIVE AI</p>
+        <h1>從學生需求出發，<br><span>設計真正能使用的教具。</span></h1>
+        <p class="hero-sub">AI 負責提供想法，你負責判斷、選擇、修改與驗證。所有設計歷程都能分階段回傳，讓老師看見你的思考如何改變。</p>
+        <div class="hero-points"><span>01 個別化設計</span><span>02 AI 圖像輔助</span><span>03 實作與驗證</span><span>04 思辨歷程</span></div>
+      </div>
+      <div class="hero-illustration" aria-hidden="true">
+        <div class="sketch-card sketch-back"><span>發想</span><div class="sketch-lines"><i></i><i></i><i></i></div></div>
+        <div class="sketch-card sketch-front"><span>製作</span><div class="sketch-target"><b></b><b></b><b></b></div><div class="sketch-base"></div></div>
+        <div class="mini-note">想法 → 圖像 → 教具 → 反思</div>
+      </div>
+    </div>
+  </header>
+  <main class="wrap" id="mainContent">
+    <div class="privacy-note" role="note"><strong>資料與倫理提醒</strong> 請使用虛構或去識別化學習案例，不要填入真實身心障礙學生的姓名、學號、照片、診斷或可辨識的個案資料。教具操作照片可用同儕模擬；真實學生影像須先有適當授權。</div>
+    <section class="dashboard" aria-label="作業進度">
+      <div class="dashboard-top"><div><p class="overline">我的設計歷程</p><h2 id="stepHeading">第 1 階段｜需求分析</h2></div><div class="dashboard-status"><span id="localSaveLabel">資料會暫存在此裝置</span><span id="progressText" class="progress-number">0%</span></div></div>
+      <div class="progress-track" role="progressbar" aria-label="資料填寫完整度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div id="progressFill"></div></div>
+      <nav id="stepNav" class="step-nav" aria-label="六個設計階段">
+        <button type="button" data-nav="1" class="step-btn active"><span class="step-bubble">1</span><span>需求分析</span></button>
+        <button type="button" data-nav="2" class="step-btn"><span class="step-bubble">2</span><span>AI 創意發想</span></button>
+        <button type="button" data-nav="3" class="step-btn"><span class="step-bubble">3</span><span>四張設計圖</span></button>
+        <button type="button" data-nav="4" class="step-btn"><span class="step-bubble">4</span><span>製作與教學</span></button>
+        <button type="button" data-nav="5" class="step-btn"><span class="step-bubble">5</span><span>試作與修正</span></button>
+        <button type="button" data-nav="6" class="step-btn"><span class="step-bubble">6</span><span>思辨與反思</span></button>
+      </nav>
+    </section>
+
+    <div class="workspace">
+      <div class="forms">
+        <form id="studioForm" novalidate>
+          <section class="step-panel" data-step="1">
+            <div class="section-heading"><span class="section-kicker">STEP 01</span><h2>你要為誰設計？</h2><p>一件好教具的起點，不是造型，而是學生需要學會什麼、已經能做到什麼。</p></div>
+            <div class="form-card"><h3>填寫者資訊</h3><div class="field-grid cols-3">
+              <label class="field">班級／組別 <span class="required">必填</span><input id="courseClass" data-field maxlength="45" placeholder="例：特教教材教法 A 班"></label>
+              <label class="field">學號／作品代碼 <span class="required">必填</span><input id="studentCode" data-field maxlength="35" placeholder="可用班級約定代碼"></label>
+              <label class="field">填寫者姓名 <span class="required">必填</span><input id="studentName" data-field maxlength="50" placeholder="以課程所需為限"></label>
+            </div><p class="field-help">老師將以「班級＋學號／作品代碼」整合你的最新紀錄。請每次使用相同資訊。</p></div>
+            <div class="form-card"><h3>學習對象與教學目標</h3>
+              <div class="field-grid cols-2">
+                <label class="field">教育階段<select id="targetStage" data-field><option value="">請選擇</option><option>幼兒園</option><option>國小</option><option>國中</option><option>高中職</option><option>其他</option></select></label>
+                <label class="field">教學情境<input id="setting" data-field maxlength="150" placeholder="例：資源教室、集中式特教班、社區活動"></label>
+              </div>
+              <label class="field">學生特徵（請用虛構或去識別化描述）<textarea id="learnerProfile" data-field rows="3" maxlength="1800" placeholder="描述學習、溝通、感官及肢體動作表現，而非僅寫障礙類別。"></textarea></label>
+              <label class="field">學生已具備的能力／優勢<textarea id="strengths" data-field rows="2" maxlength="1600" placeholder="例：能握住較大球體約 5 秒、能理解單一步驟指令。"></textarea></label>
+              <label class="field">學生需要的支持<textarea id="needs" data-field rows="2" maxlength="1600" placeholder="例：坐姿穩定支持、放大的視覺標記、口語提示、可調整的取物高度。"></textarea></label>
+              <label class="field">生活化教學主題<input id="topic" data-field maxlength="180" placeholder="例：在遊戲中練習單手拿取、對準並投擲軟球"></label>
+              <label class="field">具體可觀察的學習目標<textarea id="goal" data-field rows="3" maxlength="1500" placeholder="例：在提供口語提示下，能從指定位置拿取軟球並朝大型目標投擲，連續 5 次中完成 3 次。"></textarea></label>
+              <label class="field">學生安全與參與注意事項<textarea id="safetyFocus" data-field rows="2" maxlength="1200" placeholder="例：避免過度伸展肩部；教具須穩固不傾倒；尊重學生的意願與休息需求。"></textarea></label>
+            </div>
+            <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">我為什麼選擇這個學習目標？學生的能力描述還有哪些不確定之處？</span><textarea id="note1" data-field rows="3" maxlength="1800" placeholder="請寫下自己的判斷，不需要 AI 代寫。"></textarea></label></div>
+          </section>
+
+          <section class="step-panel" data-step="2" hidden>
+            <div class="section-heading"><span class="section-kicker">STEP 02</span><h2>讓 AI 提案，再由你作決定。</h2><p>請先開啟 Prompt，貼到任一生成式 AI 系統。拿到三種構想後，把內容貼回這裡，並說明你的比較與選擇。</p></div>
+            <div class="action-card"><div><strong>AI 任務 ①：發想三種不同操作機制的教具</strong><p>提示詞會自動帶入你在第一階段填寫的學生需求。</p></div><button class="btn btn-primary" type="button" data-prompt="ideas">開啟發想 Prompt ↗</button></div>
+            <div class="form-card">
+              <div class="field-grid cols-2"><label class="field">使用的 AI 工具<select id="aiPlatform" data-field><option value="">請選擇</option><option>ChatGPT</option><option>Gemini</option><option>Claude</option><option>Copilot</option><option>其他</option></select></label><label class="field">我如何修改 AI Prompt<input id="aiPromptChange" data-field maxlength="500" placeholder="例：要求改成坐姿可操作、刪除高成本電子元件"></label></div>
+              <label class="field">AI 產生的三種構想（貼上原始或整理後的內容）<textarea id="aiIdeaText" data-field rows="8" maxlength="14000" placeholder="請貼上 AI 提出的 3 個方案及操作機制、材料、適用性。請勿填入真實學生的個資。"></textarea></label>
+              <label class="field">我如何比較三種構想<textarea id="ideaCompare" data-field rows="4" maxlength="4000" placeholder="至少考慮學生參與、動作難度、材料費、安全、課堂可行性。不要只寫 AI 說哪一個最好。"></textarea></label>
+              <label class="field">最後選定的教具方案<input id="chosenConcept" data-field maxlength="180" placeholder="例：三色可調高度的投球目標板"></label>
+              <label class="field">選擇的理由<textarea id="chooseWhy" data-field rows="3" maxlength="3000" placeholder="請連結學生需求與製作限制，說明為什麼選這一案。"></textarea></label>
+              <label class="field">AI 建議中需要懷疑或查核的地方<textarea id="aiDoubts" data-field rows="3" maxlength="3000" placeholder="例如：尺寸不合、材料不易購得、身體負荷不適當、圖像看起來能做但其實接不起來。"></textarea></label>
+            </div>
+            <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">我有沒有拒絕 AI 的某個建議？理由是什麼？</span><textarea id="note2" data-field rows="3" maxlength="1800"></textarea></label></div>
+          </section>
+
+          <section class="step-panel" data-step="3" hidden>
+            <div class="section-heading"><span class="section-kicker">STEP 03</span><h2>把想法變成看得見的四張圖。</h2><p>可使用具圖像生成功能的 AI。四張圖應描述<strong>同一項教具</strong>，並由你檢查結構是否真的能組裝。</p></div>
+            <div class="form-card"><h3>先定義一致的設計規格</h3><label class="field">教具外觀與必要構造<textarea id="designSpecification" data-field rows="4" maxlength="3000" placeholder="寫明主要尺寸、結構、材料、操作位置、可調整項目。這段會自動放進下列四個 Prompt，減少圖片前後不一致。"></textarea></label></div>
+            <div class="image-grid">
+              <article class="image-upload-card"><div class="image-card-top"><span class="image-num">01</span><div><h3>完整外觀圖</h3><p>45 度立體視角</p></div></div><button type="button" class="btn btn-outline btn-small" data-prompt="exterior">開啟圖像 Prompt</button><div class="preview-box" id="preview-exterior"><span>尚未上傳圖片</span></div><label class="file-label" for="file-exterior">選擇圖片<span class="file-caption">可上傳 PNG / JPG / WebP</span></label><input class="visually-hidden" id="file-exterior" type="file" accept="image/png,image/jpeg,image/webp" data-image="exterior"><label class="field image-url-label">或貼圖片連結<input id="imageUrlExterior" data-field inputmode="url" maxlength="1800" placeholder="https://..."></label></article>
+              <article class="image-upload-card"><div class="image-card-top"><span class="image-num">02</span><div><h3>結構分解圖</h3><p>零件、連接與尺寸</p></div></div><button type="button" class="btn btn-outline btn-small" data-prompt="exploded">開啟圖像 Prompt</button><div class="preview-box" id="preview-exploded"><span>尚未上傳圖片</span></div><label class="file-label" for="file-exploded">選擇圖片<span class="file-caption">可上傳 PNG / JPG / WebP</span></label><input class="visually-hidden" id="file-exploded" type="file" accept="image/png,image/jpeg,image/webp" data-image="exploded"><label class="field image-url-label">或貼圖片連結<input id="imageUrlExploded" data-field inputmode="url" maxlength="1800" placeholder="https://..."></label></article>
+              <article class="image-upload-card"><div class="image-card-top"><span class="image-num">03</span><div><h3>學生操作圖</h3><p>操作姿勢與提示支持</p></div></div><button type="button" class="btn btn-outline btn-small" data-prompt="operation">開啟圖像 Prompt</button><div class="preview-box" id="preview-operation"><span>尚未上傳圖片</span></div><label class="file-label" for="file-operation">選擇圖片<span class="file-caption">建議使用模擬情境</span></label><input class="visually-hidden" id="file-operation" type="file" accept="image/png,image/jpeg,image/webp" data-image="operation"><label class="field image-url-label">或貼圖片連結<input id="imageUrlOperation" data-field inputmode="url" maxlength="1800" placeholder="https://..."></label></article>
+              <article class="image-upload-card"><div class="image-card-top"><span class="image-num">04</span><div><h3>製作步驟圖</h3><p>4–6 個可執行的步驟</p></div></div><button type="button" class="btn btn-outline btn-small" data-prompt="steps">開啟圖像 Prompt</button><div class="preview-box" id="preview-steps"><span>尚未上傳圖片</span></div><label class="file-label" for="file-steps">選擇圖片<span class="file-caption">清楚表達工具與順序</span></label><input class="visually-hidden" id="file-steps" type="file" accept="image/png,image/jpeg,image/webp" data-image="steps"><label class="field image-url-label">或貼圖片連結<input id="imageUrlSteps" data-field inputmode="url" maxlength="1800" placeholder="https://..."></label></article>
+            </div>
+            <p class="field-help image-upload-help">上傳的圖片會在同步時傳送至老師的私人 Google Drive 資料夾；本機會先保留縮圖。每張圖會自動壓縮至約 350 KB 以下，以便傳送。圖片連結若需要權限，老師可能無法開啟。</p>
+            <div class="form-card"><label class="field">這四張圖有什麼不合理、互相矛盾或需要修改的地方？<textarea id="visualReview" data-field rows="4" maxlength="3400" placeholder="例如：尺寸標示不一致、網袋缺少固定點、支架不能支撐、影像零件跟材料清單對不上。"></textarea></label></div>
+            <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">AI 生成圖片後，我對原本的教具構想做了哪些修正？</span><textarea id="note3" data-field rows="3" maxlength="1800"></textarea></label></div>
+            <details class="example-details"><summary>參考示範｜「肢體投球訓練機」四張 AI 概念圖</summary><p>這四張是教學用的 AI 示意圖，不是已驗證的施工圖。請比較圖中尺寸、接頭、安裝方法與材料預算是否一致。</p><div class="example-gallery"><figure><img src="examples/example-exterior.webp" loading="lazy" alt="示範：投球機完整外觀圖"><figcaption>完整外觀</figcaption></figure><figure><img src="examples/example-exploded.webp" loading="lazy" alt="示範：投球機結構分解圖"><figcaption>結構分解</figcaption></figure><figure><img src="examples/example-operation.webp" loading="lazy" alt="示範：學生投球操作圖"><figcaption>學生操作</figcaption></figure><figure><img src="examples/example-steps.webp" loading="lazy" alt="示範：投球機製作步驟圖"><figcaption>製作步驟</figcaption></figure></div></details>
+          </section>
+
+          <section class="step-panel" data-step="4" hidden>
+            <div class="section-heading"><span class="section-kicker">STEP 04</span><h2>從 AI 概念圖走向真實製作。</h2><p>真正能做出來、能安全使用，比生成漂亮圖片更重要。</p></div>
+            <div class="action-card"><div><strong>AI 任務 ②：製作可行性與教學設計</strong><p>請 AI 協助列出材料、成本、步驟，再逐項查核。</p></div><button type="button" class="btn btn-primary" data-prompt="build">開啟製作 Prompt ↗</button></div>
+            <div class="form-card"><h3>製作規劃</h3>
+              <label class="field">材料清單與預估單價<textarea id="materials" data-field rows="4" maxlength="3500" placeholder="例：PP 瓦楞板 1 張／80 元；PVC 管材 2 支／...；每一項請列出數量與用途。"></textarea></label>
+              <label class="field">總預算（新臺幣）<input type="number" id="budget" data-field min="0" max="10000" step="1" placeholder="原則上不超過 500"><span class="field-help">建議控制在 NT$500 內；若超過，請在材料清單說明必要性與替代方案。</span></label>
+              <label class="field">尺寸與結構說明<textarea id="dimensions" data-field rows="3" maxlength="2800" placeholder="例：寬 70 cm、深 50 cm、高 65 cm；需檢查底座是否穩定及固定方式。"></textarea></label>
+              <label class="field">具體製作步驟<textarea id="buildSteps" data-field rows="5" maxlength="4200" placeholder="依照真實工具和材料順序撰寫。誰來切割？何時檢查接頭和承重？"></textarea></label>
+              <label class="field">安全檢核與因應<textarea id="constructionSafety" data-field rows="4" maxlength="3400" placeholder="例：邊緣倒角、避免小零件脫落、預防傾倒、清潔材質、姿勢支持、使用前測試。"></textarea></label>
+            </div>
+            <div class="form-card"><h3>教學應用</h3><label class="field">教師如何示範？支持如何調整與逐步撤除？<textarea id="teachingPlan" data-field rows="4" maxlength="3600" placeholder="分成高支持／中支持／低支持，包含動作提示、位置調整和學生自主選擇。"></textarea></label><label class="field">如何觀察與評量學生表現？<textarea id="assessmentPlan" data-field rows="3" maxlength="2600" placeholder="請使用可觀察指標，例如是否自主拿取、投擲方向、成功次數、所需提示層級。"></textarea></label></div>
+            <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">AI 認為可行的地方，有哪些仍需要靠我實際確認？</span><textarea id="note4" data-field rows="3" maxlength="1800"></textarea></label></div>
+          </section>
+
+          <section class="step-panel" data-step="5" hidden>
+            <div class="section-heading"><span class="section-kicker">STEP 05</span><h2>做出來，才知道哪裡需要改。</h2><p>請用紙板模型、局部樣品或完整教具進行模擬測試；沒有取得適當同意時，不要以真實學生作為測試對象。</p></div>
+            <div class="form-card">
+              <label class="field">試作／驗證方式<select id="tryoutType" data-field><option value="">請選擇</option><option>紙板或小比例模型</option><option>局部功能測試</option><option>完整實體教具</option><option>同儕模擬操作</option><option>僅完成可行性檢核（尚未實作）</option></select></label>
+              <label class="field">測試流程<textarea id="trialMethod" data-field rows="3" maxlength="2800" placeholder="例：以軟球進行 10 次投擲；觀察目標高度、取球位置、支架穩定度。"></textarea></label>
+              <label class="field">實際觀察到的問題／結果<textarea id="trialFindings" data-field rows="4" maxlength="3200" placeholder="請區分「實際測試看到的」與「只是預測可能發生的」。"></textarea></label>
+              <label class="field">我做的修改，及其理由<textarea id="modifications" data-field rows="4" maxlength="3200" placeholder="例：改變網袋固定點，因第一次投球後網袋會向下垂。"></textarea></label>
+              <div class="prototype-upload"><div><h3>實作照片（選填）</h3><p>可以上傳模型或同儕模擬照片；避免可辨識的學生影像。</p></div><div class="preview-box preview-prototype" id="preview-prototype"><span>尚未上傳照片</span></div><label class="file-label" for="file-prototype">選擇照片</label><input class="visually-hidden" id="file-prototype" type="file" accept="image/png,image/jpeg,image/webp" data-image="prototype"><label class="field image-url-label">或貼照片連結<input id="imageUrlPrototype" data-field inputmode="url" maxlength="1800" placeholder="https://..."></label></div>
+            </div>
+            <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">真正動手後，哪一個地方與 AI 的描述最不相同？</span><textarea id="note5" data-field rows="3" maxlength="1800"></textarea></label></div>
+          </section>
+
+          <section class="step-panel" data-step="6" hidden>
+            <div class="section-heading"><span class="section-kicker">STEP 06</span><h2>留下最重要的：你的專業判斷。</h2><p>老師看的不只是最後的成果，也包括你如何辨認 AI 的限制、如何修正作品，以及如何為學生創造學習機會。</p></div>
+            <div class="action-card"><div><strong>AI 任務 ③：邀請 AI 挑戰你的設計</strong><p>你可以把設計交給 AI 做反向檢核，但最後的評估仍由你負責。</p></div><button type="button" class="btn btn-primary" data-prompt="review">開啟檢核 Prompt ↗</button></div>
+            <div class="form-card"><h3>AI 使用與專業思辨</h3>
+              <label class="field">我接受了哪些 AI 建議？為什麼？<textarea id="aiAccepted" data-field rows="3" maxlength="2800" placeholder="請舉具體建議，不要只寫 AI 很好用。"></textarea></label>
+              <label class="field">我拒絕或修正了哪些 AI 建議？依據是什麼？<textarea id="aiRejected" data-field rows="4" maxlength="3400" placeholder="請對照學生需求、實際材料、安全與課堂可行性，描述你的判斷。"></textarea></label>
+              <label class="field">學生如何把這項技能運用在日常生活？<textarea id="generalization" data-field rows="3" maxlength="2800" placeholder="例如從教具投球轉移到體育遊戲、休閒活動、與同儕互動的機會。"></textarea></label>
+              <label class="field">最終學習反思<textarea id="learningReflection" data-field rows="5" maxlength="4200" placeholder="這次設計最重要的發現是什麼？若重新設計，會怎麼做？AI 幫了什麼忙？有哪些事情無法交給 AI 決定？"></textarea></label>
+              <label class="field">希望老師給我的回饋（選填）<textarea id="teacherHelp" data-field rows="2" maxlength="1400" placeholder="你最想請老師協助檢視哪個部分？"></textarea></label>
+            </div>
+            <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">如果換一位學習特徵不同的中重度障礙學生，這項教具需要如何調整？</span><textarea id="note6" data-field rows="4" maxlength="2000"></textarea></label></div>
+            <div class="completion-box"><h3>提交前請再次確認</h3><ul><li>四張圖與材料清單描述同一項教具。</li><li>填寫內容包含自己的比較、拒絕與修改理由。</li><li>已用實際測試或明確標記的可行性檢核區分想像與證據。</li><li>資料不含真實學生的敏感個資或未經授權的影像。</li></ul><button type="button" id="finalSubmitBtn" class="btn btn-final">正式繳交完整作品</button></div>
+          </section>
+        </form>
+        <div class="stage-actions"><button type="button" class="btn btn-outline" id="prevBtn">← 上一階段</button><div class="actions-right"><button type="button" class="btn btn-secondary" id="syncBtn">儲存本階段至老師後台</button><button type="button" class="btn btn-primary" id="nextBtn">下一階段 →</button></div></div>
+        <div class="stage-save-note" id="syncFeedback" aria-live="polite"></div>
+      </div>
+      <aside class="sidebar" aria-label="學習引導與工具">
+        <section class="side-card insight-card"><p class="overline">想一想</p><h3 id="thinkingTitle">需求不等於診斷</h3><p id="thinkingText">請寫下具體、可觀察的學生能力與環境障礙，而不只是障礙名稱。</p><div class="insight-bottom">AI 是協作工具，判斷由你負責。</div></section>
+        <section class="side-card"><h3>生成式 AI 工具</h3><p>將本站產生的 Prompt 複製到你習慣的系統，再把內容或圖片貼回本站。</p><div class="tool-links"><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPT ↗</a><a href="https://gemini.google.com/" target="_blank" rel="noopener noreferrer">Gemini ↗</a><a href="https://claude.ai/" target="_blank" rel="noopener noreferrer">Claude ↗</a></div></section>
+        <section class="side-card"><h3>這個裝置上的草稿</h3><p>內容會自動暫存於目前瀏覽器。公用電腦請勿留存個資，建議另行備份。</p><div class="sidebar-buttons"><button type="button" id="importBtn" class="btn btn-outline btn-small">匯入備份</button><input class="visually-hidden" id="importFile" type="file" accept="application/json,.json"><button type="button" id="clearBtn" class="btn btn-text btn-small">清除本機資料</button></div></section>
+        <section class="side-card sync-card"><h3>雲端同步</h3><p>每完成一階段可存到 Google Sheets，老師會同時看見最新成果與修訂歷程。</p><label class="field">老師提供的課程提交碼<input type="password" id="classCode" autocomplete="off" placeholder="請輸入課程提交碼"></label><p class="small-muted" id="syncSupportText">尚未串接後台時，仍可完成設計並匯出備份。</p></section>
+      </aside>
+    </div>
+    <footer class="site-footer"><div>AI 教材教具設計工作室 · 以學習需求、實作證據與專業反思為核心</div><div>正式教學及個別化介入仍需專業判斷。</div></footer>
+  </main>
+
+  <dialog class="prompt-dialog" id="promptDialog" aria-labelledby="promptDialogTitle"><div class="dialog-head"><div><p class="overline">複製後可貼到生成式 AI 系統</p><h2 id="promptDialogTitle">AI Prompt</h2></div><button type="button" class="dialog-close" id="closePrompt" aria-label="關閉提示詞">×</button></div><label for="promptText">你可以先修改提示詞，再複製使用。</label><textarea id="promptText" rows="18" spellcheck="false"></textarea><div class="dialog-actions"><button type="button" class="btn btn-outline" id="closePromptBottom">返回作業</button><button type="button" class="btn btn-primary" id="copyPrompt">複製 Prompt</button></div></dialog>
+  <dialog class="confirm-dialog" id="clearDialog" aria-labelledby="clearDialogTitle"><h2 id="clearDialogTitle">清除本機草稿？</h2><p>這只會清除此瀏覽器的草稿，不會刪除已存到 Google Sheets 的紀錄。此動作無法復原。</p><div class="dialog-actions"><button class="btn btn-outline" type="button" id="cancelClear">取消</button><button class="btn btn-danger" type="button" id="confirmClear">清除本機草稿</button></div></dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
