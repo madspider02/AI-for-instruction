@@ -12,3 +12,16 @@
 @media print{.topbar-tools,.hero-illustration,.dashboard,.sidebar,.stage-actions,.privacy-note,.action-card,.file-label,.site-footer,.btn{display:none!important}body{background:white}.hero{background:none;border:0}.hero-grid{min-height:auto;padding:8px 0}.hero h1{font-size:1.4rem}.hero-sub{display:none}.workspace{display:block}.step-panel[hidden]{display:block}.form-card,.reflection{break-inside:avoid;box-shadow:none}.forms{width:100%}}
 /* hidden 屬性需優先於按鈕的 display 設定。 */
 .btn[hidden]{display:none!important}
+
+/* 第三階段 PDF 階段作業入口（僅學生網站的按鈕；PDF 版面由預覽視窗控制） */
+.stage-pdf-panel{display:flex;align-items:center;gap:18px;background:linear-gradient(125deg,#eaf5f2,#f7fbf9 65%);border:1px solid #a4d2c9;border-radius:15px;padding:21px 22px;margin:22px 0 21px}
+.stage-pdf-mark{flex:0 0 59px;width:59px;height:69px;display:flex;align-items:center;justify-content:center;border:2px solid #3d9688;border-radius:10px;background:#fff;color:#0c615e;font-size:1.05rem;font-weight:900;letter-spacing:.07em;box-shadow:0 5px 15px #1a696513}
+.stage-pdf-content{flex:1;min-width:0}
+.stage-pdf-eyebrow{font-size:.68rem;letter-spacing:.095em;color:#3c817a;font-weight:850}
+.stage-pdf-content h3{font-size:1rem;margin:3px 0 5px;line-height:1.45}
+.stage-pdf-content p{font-size:.81rem;color:#45636c;line-height:1.72;margin:0 0 7px}
+.stage-pdf-content .stage-pdf-help{font-size:.76rem;color:#6c7778;margin-bottom:0}
+.btn-pdf{background:#0f6964;color:#fff;flex:0 0 auto;white-space:normal;text-align:center}
+.btn-pdf:hover{background:#0a544f}
+@media(max-width:760px){.stage-pdf-panel{flex-wrap:wrap;gap:10px}.stage-pdf-content{flex:1 1 calc(100% - 77px)}.btn-pdf{width:100%;flex-basis:100%}}
+@media print{.stage-pdf-panel{display:none!important}}

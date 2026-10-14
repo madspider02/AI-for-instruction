@@ -243,6 +243,154 @@
     try { await navigator.clipboard.writeText(text); showToast('已複製 Prompt，可貼到任何生成式 AI。'); }
     catch (_) { $('promptText').focus(); $('promptText').select(); showToast('請按 Ctrl+C 或 ⌘C 複製已選取的文字。'); }
   }
+  // 輸出 PDF 的步驟只涉及本機瀏覽器：以 A4 報告預覽結合「列印 -> 另存為 PDF」。
+  // 不依賴外部 PDF 套件或 Google Apps Script，因此 GitHub Pages 可直接使用。
+  function escapeReportHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function reportFilenamePart(value) {
+    return safeString(value).replace(/[\\/:*?"<>|\u0000-\u001f]/g,'_').replace(/\s+/g,'_').slice(0,32) || '未填';
+  }
+  function reportField(id, label, className = '') {
+    const value = safeString($(id)?.value);
+    const classes = className ? ` report-field-${escapeReportHtml(className)}` : '';
+    return `<div class="report-field${classes}"><h3>${escapeReportHtml(label)}</h3><div class="report-value">${value ? escapeReportHtml(value) : '<span class="empty">未填寫</span>'}</div></div>`;
+  }
+  function reportImages() {
+    const names = ['完整外觀圖｜45 度立體視角','結構分解圖｜零件與尺寸','學生操作示意圖｜操作姿勢與支持','製作步驟圖｜材料與組裝'];
+    return PHOTO_SLOTS.slice(0,4).map((slot,i) => {
+      const entry = state.images[slot] || {};
+      const image = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(entry.dataUrl || '') ? entry.dataUrl : '';
+      return `<figure class="design-figure"><div class="figure-heading"><span class="fig-num">圖 ${i+1}</span><h2>${names[i]}</h2></div><div class="figure-frame"><img src="${image}" alt="${escapeReportHtml(SLOT_LABELS[slot])}"></div><figcaption>學生提供的 AI 概念圖；須由製作者查核尺寸、結構、安全性與可製作性。<span>${escapeReportHtml(entry.fileName || '')}</span></figcaption></figure>`;
+    }).join('');
+  }
+  function validateStage3Pdf() {
+    for (const [step,id,label] of REQUIRED) {
+      if (step > 3) continue;
+      if (!safeString($(id)?.value)) return {step,id,label};
+    }
+    for (const slot of PHOTO_SLOTS.slice(0,4)) {
+      const image = state.images[slot] || {};
+      if (!/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(image.dataUrl || '')) {
+        return {step:3,id:`file-${slot}`,label:`${SLOT_LABELS[slot]}的圖片檔`};
+      }
+    }
+    return null;
+  }
+  function stage3ReportHtml() {
+    const date = new Date();
+    const fileName = `AI教具設計_階段1至3_${reportFilenamePart($('courseClass').value)}_${reportFilenamePart($('studentCode').value)}_${reportFilenamePart($('studentName').value)}`;
+    const timestamp = escapeReportHtml(date.toLocaleString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}));
+    const group = (title,contents) => `<section class="report-section"><h2 class="section-title">${escapeReportHtml(title)}</h2>${contents}</section>`;
+    const info = `
+      <div class="metadata">
+        <div><span>班級／組別</span><strong>${escapeReportHtml($('courseClass').value)}</strong></div>
+        <div><span>學號／作品代碼</span><strong>${escapeReportHtml($('studentCode').value)}</strong></div>
+        <div><span>填寫者姓名</span><strong>${escapeReportHtml($('studentName').value)}</strong></div>
+        <div><span>匯出時間</span><strong>${timestamp}</strong></div>
+      </div>`;
+    const sections = `
+      ${group('01｜學習需求分析',
+        reportField('targetStage','教育階段')+reportField('setting','教學情境')+
+        reportField('learnerProfile','學生學習特徵（去識別化）')+
+        reportField('strengths','學生已具備的能力與優勢')+
+        reportField('needs','需要的支持')+reportField('topic','生活化教學主題')+
+        reportField('goal','具體可觀察的學習目標')+reportField('safetyFocus','安全與參與注意事項')+
+        reportField('note1','我的思考紀錄','reflection'))}
+      ${group('02｜AI 構想發想與選擇',
+        reportField('aiPlatform','使用的 AI 工具')+reportField('aiPromptChange','我如何修改 AI Prompt')+
+        reportField('aiIdeaText','AI 提出的三種教具構想')+reportField('ideaCompare','三種方案比較')+
+        reportField('chosenConcept','最後選定的教具方案')+reportField('chooseWhy','選擇理由')+
+        reportField('aiDoubts','AI 建議中值得懷疑與查核的地方')+reportField('note2','我的思考紀錄','reflection'))}
+      ${group('03｜設計規格與圖像檢核',
+        reportField('designSpecification','教具外觀與必要構造')+
+        reportField('visualReview','四張圖的矛盾、疑慮與待修改處')+
+        reportField('note3','圖片生成後，我調整了哪些設計？','reflection'))}
+      <div class="figure-intro"><h2>04｜AI 教具設計示意圖</h2><p>四張圖均為前述同一套教具的視覺化設計，僅供概念理解及實作前檢核。</p></div>
+      ${reportImages()}`;
+    return `<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeReportHtml(fileName)}</title>
+    <style>
+      :root{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",Arial,sans-serif;color:#1c3542;background:#f0f4f4;font-size:11pt}
+      *{box-sizing:border-box}body{margin:0;line-height:1.64}button{font:inherit;cursor:pointer}
+      .toolbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#123e4f;color:#fff;padding:12px max(16px,calc((100vw - 880px)/2));font-size:13px;box-shadow:0 4px 13px #0002}
+      .toolbar strong{display:block}.toolbar small{color:#dce9e7;display:block;margin-top:2px}
+      .toolbar button{border:0;background:#fff;color:#095f60;border-radius:8px;padding:9px 17px;font-weight:750;white-space:nowrap}
+      main{width:min(880px,calc(100% - 32px));margin:25px auto 45px;background:#fff;box-shadow:0 10px 38px #153d4b1a;padding:33px 38px}
+      .report-kicker{font-size:10pt;color:#327d74;font-weight:800;letter-spacing:.11em;margin:0 0 6px}
+      h1{font-size:22pt;color:#123d4e;line-height:1.4;margin:0 0 7px;font-weight:850}
+      .subtitle{color:#61747c;font-size:10pt;margin:0 0 19px}
+      .metadata{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;padding:14px 17px;border-radius:9px;background:#f2f7f6;border:1px solid #dbeae7;margin-bottom:25px}
+      .metadata>div{display:flex;flex-direction:column;overflow-wrap:anywhere}
+      .metadata span{font-size:8.5pt;color:#667d81}.metadata strong{font-size:10pt;font-weight:750}
+      .report-section{margin:0 0 25px}
+      .section-title,.figure-intro h2{font-size:14.2pt;color:#0e5667;border-left:4px solid #77b5a8;padding:5px 0 5px 12px;line-height:1.35;margin:20px 0 15px;break-after:avoid}
+      .report-field{margin:0 0 12px;overflow-wrap:anywhere}
+      .report-field h3{font-size:9.5pt;font-weight:800;margin:0 0 3px;color:#305967;break-after:avoid}
+      .report-value{font-size:10pt;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75}
+      .report-field-reflection{padding:11px 15px 10px;background:#f0f7f5;border-left:3px solid #70ae9e;border-radius:4px}
+      .empty{font-size:9pt;color:#87969b}
+      .figure-intro{break-before:page;margin-top:0}
+      .figure-intro h2{margin-top:0}.figure-intro p{color:#59717a;font-size:9.5pt;margin:2px 0 8px}
+      .design-figure{break-before:page;page-break-before:always;break-inside:avoid;page-break-inside:avoid;margin:0 0 14px;min-height:0}
+      .figure-intro+.design-figure{break-before:auto;page-break-before:auto}
+      .figure-heading{display:flex;align-items:center;gap:13px;border-bottom:1px solid #d9e8e7;padding:4px 0 10px;margin-bottom:13px}
+      .fig-num{display:inline-block;font-weight:800;background:#e4f4f0;border-radius:9px;color:#166363;padding:5px 10px;font-size:9pt;white-space:nowrap}
+      .figure-heading h2{font-size:13.5pt;margin:0;color:#234957}
+      .figure-frame{display:flex;align-items:flex-start;justify-content:center;min-height:0}
+      .figure-frame img{max-width:100%;max-height:198mm;width:auto;height:auto;object-fit:contain;border:1px solid #e1e9e9;border-radius:4px}
+      figcaption{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:8.5pt;color:#637980;line-height:1.55;overflow-wrap:anywhere}
+      figcaption span{text-align:right;max-width:35%}
+      .report-footer{color:#64777e;font-size:9pt;border-top:1px solid #d9e5e4;padding-top:12px;margin-top:14px}
+      @media(max-width:600px){.toolbar{flex-direction:column;align-items:stretch}.toolbar button{width:100%}main{padding:18px}.metadata{grid-template-columns:1fr}.report-section{margin-bottom:18px}}
+      @page{size:A4;margin:15mm 16mm 16mm}
+      @media print{
+        :root{background:#fff;color-adjust:exact;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        body{background:#fff}.toolbar{display:none!important}
+        main{width:100%;margin:0;padding:0;box-shadow:none}
+        .metadata,.report-field-reflection,.fig-num{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        .metadata{break-inside:avoid;page-break-inside:avoid}
+        .report-section:nth-of-type(2){break-before:page;page-break-before:always}
+        .figure-frame img{max-height:192mm}
+        .design-figure{break-before:page;page-break-before:always}
+        .figure-intro+.design-figure{break-before:auto;page-break-before:auto}
+        .figure-intro{break-before:page;page-break-before:always}
+        .section-title{break-after:avoid;page-break-after:avoid}
+        .report-field h3{break-after:avoid;page-break-after:avoid}
+      }
+    </style></head><body>
+    <div class="toolbar"><div><strong>第 1–3 階段成果報告預覽</strong><small>確認內容與四張圖 → 點右方「列印／另存 PDF」→ 目的地選「另存為 PDF」</small></div><button type="button" onclick="window.print()">列印／另存 PDF</button></div>
+    <main><header class="report-header"><p class="report-kicker">AI 教材教具設計工作室 · 階段作業</p><h1>教材教具創意設計與 AI 思辨紀錄</h1><p class="subtitle">第 1–3 階段｜學習需求、AI 構想比較與四張教具設計圖</p>${info}</header>${sections}<footer class="report-footer">本階段成果為教具構想與 AI 生成示意圖，不代表已完成實體製作、結構驗證或學生學習成效測試。請使用去識別化個案資料。</footer></main></body></html>`;
+  }
+  function exportStage3Pdf() {
+    persist();
+    const missing = validateStage3Pdf();
+    if (missing) {
+      setStep(missing.step);
+      if (missing.id.startsWith('file-')) {
+        $(`preview-${missing.id.slice(5)}`)?.scrollIntoView({behavior:'smooth',block:'center'});
+      } else {
+        $(missing.id)?.focus();
+      }
+      showToast(`請先補齊「${missing.label}」，再匯出 PDF。`,true);
+      return;
+    }
+    const tab = window.open('','_blank');
+    if (!tab) {
+      showToast('瀏覽器阻擋了報告預覽視窗，請允許本站開啟彈出視窗後重試。',true);
+      return;
+    }
+    try {
+      tab.document.open();
+      tab.document.write(stage3ReportHtml());
+      tab.document.close();
+      tab.focus();
+      showToast('報告預覽已開啟，請按「列印／另存 PDF」。');
+    } catch(error) {
+      tab.close();
+      showToast('無法開啟 PDF 預覽，請允許新分頁後再試。',true);
+    }
+  }
+
   function exportBackup() {
     const data = snapshot();
     const blob = new Blob([JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json;charset=utf-8'});
@@ -351,7 +499,7 @@
           found = true;
           if (receipt.ok) {
             for (const slot of (receipt.uploadedSlots || [])) {
-              if (state.images[slot]) { state.images[slot].dataUrl=''; state.images[slot].uploaded=true; renderImage(slot); }
+              if (state.images[slot]) { state.images[slot].uploaded=true; renderImage(slot); }
             }
             state.lastConfirmed={at:new Date().toISOString(),mode:isFinal?'正式繳交':'階段存檔',stage:currentStep,requestId};
             persist();
@@ -385,6 +533,7 @@
     $('closePrompt').addEventListener('click',()=>$('promptDialog').close());
     $('closePromptBottom').addEventListener('click',()=>$('promptDialog').close());
     $('exportBtn').addEventListener('click',exportBackup);
+    $('exportStage3PdfBtn').addEventListener('click',exportStage3Pdf);
     $('importBtn').addEventListener('click',()=>$('importFile').click());
     $('importFile').addEventListener('change',importBackup);
     $('clearBtn').addEventListener('click',()=>$('clearDialog').showModal());

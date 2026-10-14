@@ -99,6 +99,16 @@
             <p class="field-help image-upload-help">上傳的圖片會在同步時傳送至老師的私人 Google Drive 資料夾；本機會先保留縮圖。每張圖會自動壓縮至約 350 KB 以下，以便傳送。圖片連結若需要權限，老師可能無法開啟。</p>
             <div class="form-card"><label class="field">這四張圖有什麼不合理、互相矛盾或需要修改的地方？<textarea id="visualReview" data-field rows="4" maxlength="3400" placeholder="例如：尺寸標示不一致、網袋缺少固定點、支架不能支撐、影像零件跟材料清單對不上。"></textarea></label></div>
             <div class="reflection"><label class="field"><strong>階段思考紀錄</strong><span class="prompt-question">AI 生成圖片後，我對原本的教具構想做了哪些修正？</span><textarea id="note3" data-field rows="3" maxlength="1800"></textarea></label></div>
+            <section class="stage-pdf-panel" aria-labelledby="stage3PdfTitle">
+              <div class="stage-pdf-mark" aria-hidden="true">PDF</div>
+              <div class="stage-pdf-content">
+                <span class="stage-pdf-eyebrow">階段作業｜第 1 至第 3 階段</span>
+                <h3 id="stage3PdfTitle">匯出目前的教具構想與四張設計圖</h3>
+                <p>前三階段完成後，可整理成 A4 PDF 上傳學校作業平台。報告包含學習需求、AI 三種構想、選擇與質疑的理由、設計規格及四張圖片。</p>
+                <p class="stage-pdf-help">請先上傳四張圖片檔（僅貼網址無法保證 PDF 收錄圖片）。點擊後開啟報告預覽，再選擇「列印／另存為 PDF」。不需要先同步 Google Sheets，也不影響後續第 4 至第 6 階段。</p>
+              </div>
+              <button type="button" id="exportStage3PdfBtn" class="btn btn-pdf">預覽並另存 PDF ↗</button>
+            </section>
             <details class="example-details"><summary>參考示範｜「肢體投球訓練機」四張 AI 概念圖</summary><p>這四張是教學用的 AI 示意圖，不是已驗證的施工圖。請比較圖中尺寸、接頭、安裝方法與材料預算是否一致。</p><div class="example-gallery"><figure><img src="examples/example-exterior.webp" loading="lazy" alt="示範：投球機完整外觀圖"><figcaption>完整外觀</figcaption></figure><figure><img src="examples/example-exploded.webp" loading="lazy" alt="示範：投球機結構分解圖"><figcaption>結構分解</figcaption></figure><figure><img src="examples/example-operation.webp" loading="lazy" alt="示範：學生投球操作圖"><figcaption>學生操作</figcaption></figure><figure><img src="examples/example-steps.webp" loading="lazy" alt="示範：投球機製作步驟圖"><figcaption>製作步驟</figcaption></figure></div></details>
           </section>
 
